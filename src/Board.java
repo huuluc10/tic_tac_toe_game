@@ -5,15 +5,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class Board extends JPanel {
-    private int boardSize;
-
-    public int getBoardSize() {
-        return boardSize;
-    }
-
-    private int sizeJframe;
-    private Color newColor = new Color(0xB4BEFD);
-    private int size;
+    private final int boardSize;
+    private final int sizeJframe;
+    private final Color newColor = new Color(0xB4BEFD);
+    private final int size;
     private Image imgX;
     private Image imgO;
     private Cell[][] c;
@@ -28,20 +23,19 @@ public class Board extends JPanel {
 
     public Board(int boardSize, int sizeJframe) {
 
-        this.boardSize = boardSize;
-        this.sizeJframe = sizeJframe;
-        availableMove = boardSize * boardSize;
-        System.out.println(availableMove);
-        size = (int) sizeJframe/boardSize;
+        this.boardSize = boardSize;     //kích thươc bàn cờ
+        this.sizeJframe = sizeJframe;   //kích thước Jframe
+        availableMove = boardSize * boardSize;      //số nước đi có thể đi
+        size = (int) sizeJframe/boardSize;      //kích thước của cell
 
-        c = new Cell[boardSize][boardSize];
-        this.initMatrix();
+        c = new Cell[boardSize][boardSize];     //tạo mảng Cell để lưu thông tin bàn cờ
+        this.initMatrix();      //khởi tạo mảng Cell rỗng
 
         addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                //lấy tọa đọ chuột click
                 int xM = e.getX();
                 int yM = e.getY();
 
@@ -50,7 +44,6 @@ public class Board extends JPanel {
                 for (int i = 0; i < boardSize; i++) {
                     for (int j = 0; j < boardSize; j++) {
                         Cell cell = c[i][j];
-//                        System.out.println(cell.getX() + ";" + cell.getY());
                         int cX_Start = cell.getX();
                         int cY_Start = cell.getY();
                         int cX_End = cell.getX() + cell.getWidth();
@@ -65,9 +58,10 @@ public class Board extends JPanel {
                                 current_Player = current_Player.equals(Cell.X_Value) ? Cell.O_Value : Cell.X_Value;
                                 repaint();
                                 availableMove--;
-                                result = CheckWin(i,j,c[i][j].getValue());
-                                checkEndGame();
+                                EndGame(i,j,c[i][j].getValue());
+                                PlayAI();
                             }
+                            //kết thúc vòng lặp
                             i = boardSize-1;
                             break;
                         }
@@ -75,17 +69,12 @@ public class Board extends JPanel {
                 }
             }
         });
-
         try {
             imgX = ImageIO.read(getClass().getResource("X.png"));
             imgO = ImageIO.read(getClass().getResource("O.png"));
         }catch(Exception e){
             e.printStackTrace();
         }
-    }
-
-    public Board(Cell[][] c) {
-        this.c = c;
     }
 
     private void initMatrix(){
@@ -97,7 +86,7 @@ public class Board extends JPanel {
         }
     }
 
-    private boolean checkHorzontal(int col, int row, int countWin) {
+    private boolean checkHorzontal(int col, int row, int countWin) {    //kiểm tra theo chiều ngang
         int countLeft = 0;
         int countRight = -1;
         for (int i = col; i >= 0 ; i--) {
@@ -120,7 +109,7 @@ public class Board extends JPanel {
         return false;
     }
 
-    private boolean checkVertical(int col, int row, int countWin) {
+    private boolean checkVertical(int col, int row, int countWin) {     //kiểm tra theo chiều dọc
         int countTop = 0;
         int countBottom = -1;
         for (int i = col; i >= 0 ; i--) {
@@ -143,7 +132,7 @@ public class Board extends JPanel {
         return false;
     }
 
-    private boolean checkPrimaryDiagonal(int col, int row, int countWin) {
+    private boolean checkPrimaryDiagonal(int col, int row, int countWin) {      //kiểm tra theo đường chéo chính
         int countTop = 0;
         int countBottom = -1;
         for (int i = 0; i <= col; i++) {
@@ -168,7 +157,7 @@ public class Board extends JPanel {
         return false;
     }
 
-    private boolean checkSecondaryDiagonal(int col, int row, int countWin) {
+    private boolean checkSecondaryDiagonal(int col, int row, int countWin) {    //kiểm tra đường chéo phụ
         int countTop = 0;
         int countBottom = -1;
         for (int i = 0; i <= col; i++) {
@@ -193,7 +182,7 @@ public class Board extends JPanel {
         return false;
     }
 
-    public int CheckWin(int col, int row, String value){
+    private int CheckWin(int col, int row, String value){
         int countWin = 0;
         if(boardSize < 5) {
             countWin = 3;
@@ -214,7 +203,8 @@ public class Board extends JPanel {
         return -1;
     }
 
-    private void checkEndGame() {
+    private void EndGame(int col, int row, String value) {
+        int result = CheckWin(col,row,value);
         String playerWin ="";
         if(result == humanWin) {
             playerWin ="Bạn thắng";
@@ -227,22 +217,24 @@ public class Board extends JPanel {
             int reply = JOptionPane.showConfirmDialog(null, "Trò chơi kết thúc!\n" + playerWin + "\nBạn có muốn chơi lại?", "Tiếp tục?",  JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION)
             {
-                resetGame();
+                availableMove = boardSize * boardSize;
+                initMatrix();
+                last_Player = "";
+                current_Player = Cell.X_Value;
+                repaint();
+            } else {
+                System.exit(0);
             }
         }
     }
 
-    private void resetGame() {
-        availableMove = boardSize * boardSize;
-        initMatrix();
-        last_Player = "";
-        current_Player = Cell.X_Value;
-        repaint();
-    }
-
-    public boolean isTileMarked(int row, int column) {
-//        return board[row][column].isMarked();
-        return true;
+    private Cell PlayAI() {
+        //Gọi minimax trả về kiểu dữ liệu Cell để lấy tọa độ X, Y
+        Minimax.getBestMove(c, boardSize);
+//        Cell c = Minimax.getBestMove(board_copy);
+        //gán Cell tại tọa độ X, Y là hình là O
+        //trả về kiểu dữ liệu Cell để kiểm tra thắng thua
+        return null;
     }
 
     @Override
