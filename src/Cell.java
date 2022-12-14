@@ -59,8 +59,6 @@ public class Cell {
     }
 
     public void setValue(String value) {
-        if(this.value == Empty_value) {
-            this.value = value;
-        }
+        this.value = value;
     }
 }

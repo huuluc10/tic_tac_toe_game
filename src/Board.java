@@ -21,6 +21,16 @@ public class Board extends JPanel {
     private final int tie = 0;
     private int result = -1;
 
+    public int getBoardSize() {
+        return boardSize;
+    }
+    public void setC(Cell[][] c) {
+        this.c = c;
+    }
+    public Cell[][] getC() {
+        return c;
+    }
+
     public Board(int boardSize, int sizeJframe) {
 
         this.boardSize = boardSize;     //kích thươc bàn cờ
@@ -230,11 +240,21 @@ public class Board extends JPanel {
 
     private Cell PlayAI() {
         //Gọi minimax trả về kiểu dữ liệu Cell để lấy tọa độ X, Y
-        Minimax.getBestMove(c, boardSize);
+        Board board_copy = this;
+        Minimax.getBestMove(board_copy);
 //        Cell c = Minimax.getBestMove(board_copy);
         //gán Cell tại tọa độ X, Y là hình là O
         //trả về kiểu dữ liệu Cell để kiểm tra thắng thua
         return null;
+    }
+
+    public void printMatrix() {
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                System.out.print(c[j][i].getValue() + " | ");
+            }
+            System.out.println();
+        }
     }
 
     @Override
