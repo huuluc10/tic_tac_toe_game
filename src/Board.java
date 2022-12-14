@@ -18,6 +18,7 @@ public class Board extends JPanel {
     private final int aiWin = 10;
     private final int tie = 0;
     private int result = -1;
+    private String current_Player = Cell.X_Value;
 
     public int getBoardSize() {
         return boardSize;
@@ -27,6 +28,9 @@ public class Board extends JPanel {
     }
     public Cell[][] getC() {
         return c;
+    }
+    public int getAvailableMove() {
+        return availableMove;
     }
 
     public Board(int boardSize, int sizeJframe) {
@@ -47,7 +51,6 @@ public class Board extends JPanel {
                 int xM = e.getX();
                 int yM = e.getY();
                 getHumanMove(xM, yM);
-                PlayAI();
             }
         });
         try {
@@ -201,6 +204,7 @@ public class Board extends JPanel {
                 availableMove = boardSize * boardSize;
                 initMatrix();
                 repaint();
+                current_Player = Cell.X_Value;
             } else {
                 System.exit(0);
             }
@@ -208,12 +212,19 @@ public class Board extends JPanel {
     }
 
     private void PlayAI() {
-        //Gọi minimax trả về kiểu dữ liệu Cell để lấy tọa độ X, Y
-        Board board_copy = this;
-        int [] coordinates = Minimax.getBestMove(board_copy);
-        c[coordinates[0]][coordinates[1]].setValue(Cell.O_Value);
-        repaint();
-        //trả về kiểu dữ liệu Cell để kiểm tra thắng thua
+        if (current_Player.equals(Cell.O_Value)) {
+            //Gọi minimax trả về kiểu dữ liệu Cell để lấy tọa độ X, Y
+            Board board_copy = this;
+            int x , y;
+            int [] coordinates = Minimax.getBestMove(board_copy);
+            x = coordinates[0];
+            y = coordinates[1];
+            c[x][y].setValue(Cell.O_Value);
+            EndGame(x,y,c[x][y].getValue());
+            repaint();
+            availableMove--;
+            current_Player = Cell.X_Value;
+        }
     }
 
     private void getHumanMove (int xM, int yM) {
@@ -234,7 +245,8 @@ public class Board extends JPanel {
                         repaint();
                         availableMove--;
                         EndGame(i,j,c[i][j].getValue());
-
+                        current_Player = Cell.O_Value;
+                        PlayAI();
                     }
                     //kết thúc vòng lặp
                     i = boardSize-1;
