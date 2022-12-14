@@ -5,14 +5,12 @@ public class Minimax {
     public static int minimax(Board board, boolean isMax, int col, int row) {
         int boardValue =  evaluateBoard(board.getC(), board.getBoardSize(),col,row);
 
-        return 0;
+        return 10;
     }
 
-    public static Cell getBestMove(Board board) {
-        Cell[][] c = board.getC();
-        Cell c1 = board.getC()[1][0];
+    public static int[] getBestMove(Board board) {
         int boardSize = board.getBoardSize();
-        Cell bestMove = new Cell();
+        int[] bestMove = new int[2];
         int bestValue = Integer.MIN_VALUE;
         //gọi hàm minimax để tìm bước đi tốt nhất
         for (int i = 0; i < boardSize; i++) {
@@ -25,8 +23,9 @@ public class Minimax {
                     board.getC()[i][j].setValue(Cell.Empty_value);
 
                     if(moveValue > bestValue) {
-                        bestMove.setX(i);
-                        bestMove.setY(j);
+                        bestMove[0] = i;
+                        bestMove[j] = j;
+//                        bestMove.setValue(Cell.O_Value);
                         bestValue = moveValue;
                     }
                 }

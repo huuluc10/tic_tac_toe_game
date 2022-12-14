@@ -12,8 +12,6 @@ public class Board extends JPanel {
     private Image imgX;
     private Image imgO;
     private Cell[][] c;
-    private String current_Player = Cell.X_Value;
-    private String last_Player = "";
     private Image img;
     private int availableMove;
     private final int humanWin = -10;
@@ -48,35 +46,8 @@ public class Board extends JPanel {
                 //lấy tọa đọ chuột click
                 int xM = e.getX();
                 int yM = e.getY();
-
-
-                //tính toán nhân vào cell nào
-                for (int i = 0; i < boardSize; i++) {
-                    for (int j = 0; j < boardSize; j++) {
-                        Cell cell = c[i][j];
-                        int cX_Start = cell.getX();
-                        int cY_Start = cell.getY();
-                        int cX_End = cell.getX() + cell.getWidth();
-                        int cY_End = cell.getY() + cell.getHeight();
-
-                        if (cX_Start <= xM && cX_End >= xM && cY_Start <= yM && cY_End >= yM) {
-                            System.out.println("Đã chọn ô ở cột " + (i+1) + " hàng " + (j+1));
-
-                            if(c[i][j].getValue() == "" || c[i][j].getValue() != last_Player) {
-                                c[i][j].setValue(current_Player);
-                                last_Player = current_Player;
-                                current_Player = current_Player.equals(Cell.X_Value) ? Cell.O_Value : Cell.X_Value;
-                                repaint();
-                                availableMove--;
-                                EndGame(i,j,c[i][j].getValue());
-                                PlayAI();
-                            }
-                            //kết thúc vòng lặp
-                            i = boardSize-1;
-                            break;
-                        }
-                    }
-                }
+                getHumanMove(xM, yM);
+                PlayAI();
             }
         });
         try {
@@ -229,8 +200,6 @@ public class Board extends JPanel {
             {
                 availableMove = boardSize * boardSize;
                 initMatrix();
-                last_Player = "";
-                current_Player = Cell.X_Value;
                 repaint();
             } else {
                 System.exit(0);
@@ -238,14 +207,41 @@ public class Board extends JPanel {
         }
     }
 
-    private Cell PlayAI() {
+    private void PlayAI() {
         //Gọi minimax trả về kiểu dữ liệu Cell để lấy tọa độ X, Y
         Board board_copy = this;
-        Minimax.getBestMove(board_copy);
-//        Cell c = Minimax.getBestMove(board_copy);
-        //gán Cell tại tọa độ X, Y là hình là O
+        int [] coordinates = Minimax.getBestMove(board_copy);
+        c[coordinates[0]][coordinates[1]].setValue(Cell.O_Value);
+        repaint();
         //trả về kiểu dữ liệu Cell để kiểm tra thắng thua
-        return null;
+    }
+
+    private void getHumanMove (int xM, int yM) {
+        //tính toán nhân vào cell nào
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                Cell cell = c[i][j];
+                int cX_Start = cell.getX();
+                int cY_Start = cell.getY();
+                int cX_End = cell.getX() + cell.getWidth();
+                int cY_End = cell.getY() + cell.getHeight();
+
+                if (cX_Start <= xM && cX_End >= xM && cY_Start <= yM && cY_End >= yM) {
+                    System.out.println("Đã chọn ô ở cột " + (i+1) + " hàng " + (j+1));
+
+                    if(c[i][j].getValue() == "") {
+                        c[i][j].setValue(Cell.X_Value);
+                        repaint();
+                        availableMove--;
+                        EndGame(i,j,c[i][j].getValue());
+
+                    }
+                    //kết thúc vòng lặp
+                    i = boardSize-1;
+                    break;
+                }
+            }
+        }
     }
 
     public void printMatrix() {
