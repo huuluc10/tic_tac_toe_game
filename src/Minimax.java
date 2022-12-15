@@ -1,3 +1,8 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -5,25 +10,44 @@ public class Minimax {
     Minimax() {
 
     }
-    public static int minimax(Board board, int depth,  boolean isMax, int col, int row) {
+    public static int minimax(Board board, int depth,  boolean isMax, int col, int row, File f) {
         int boardValue =  evaluateBoard(board,col,row);
+
         if(boardValue != 0 || board.getAvailableMove() <= 0) {
+            try {
+                BufferedWriter bw = null;
+                FileWriter fw = null;
+                fw = new FileWriter(f.getAbsoluteFile(), true);
+                bw = new BufferedWriter(fw);
+                for (int i = 0; i < board.getBoardSize(); i++) {
+                    for (int j = 0; j < board.getBoardSize(); j++) {
+                        bw.write((board.getC()[i][j].getValue() + " | "));
+                    }
+                    bw.write("\n");
+                }
+                bw.write(String.valueOf(boardValue) + "\n");
+                bw.write("--------------------------\n");
+                if (bw != null)
+                    bw.close();
+                if (fw != null)
+                    fw.close();
+            } catch (IOException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+            }
             return  boardValue;
         }
-        board.printMatrix();
-        System.out.println("--------------------------");
+
         if (isMax) {
             int hightestValue = Integer.MIN_VALUE;
             for (int i = 0; i < board.getBoardSize(); i++) {
                 for (int j = 0; j < board.getBoardSize(); j++) {
                     if (board.getC()[i][j].getValue().equals(Cell.Empty_value)) {
                         board.getC()[i][j].setValue(Cell.X_Value);
-                        hightestValue = max(hightestValue, minimax(board, depth + 1, false, i,j));
+                        hightestValue = max(hightestValue, minimax(board, depth + 1, false, i,j, f));
                         board.getC()[i][j].setValue(Cell.Empty_value);
-
                     }
                 }
-                System.out.println("--------------------------");
             }
             return hightestValue;
         } else {
@@ -32,17 +56,27 @@ public class Minimax {
                 for (int j = 0; j < board.getBoardSize(); j++) {
                     if (board.getC()[i][j].getValue().equals(Cell.Empty_value)) {
                         board.getC()[i][j].setValue(Cell.O_Value);
-                        lowestVal = min(lowestVal, minimax(board,depth + 1 , true, i,j));
+                        lowestVal = min(lowestVal, minimax(board,depth + 1 , true, i,j,f));
                         board.getC()[i][j].setValue(Cell.Empty_value);
                     }
                 }
-                System.out.println("--------------------------");
             }
             return lowestVal;
         }
     }
 
     public static int[] getBestMove(Board board) {
+        File console = new File("console.txt");
+        try {
+            if (console.createNewFile()) {
+                System.out.println("File created: " + console.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
         int boardSize = board.getBoardSize();
         int[] bestMove = new int[2];
         int bestValue = Integer.MIN_VALUE;
@@ -51,7 +85,7 @@ public class Minimax {
             for (int j = 0; j < boardSize; j++) {
                 if (board.getC()[i][j].getValue().equals(Cell.Empty_value)) {
                     board.getC()[i][j].setValue(Cell.O_Value);
-                    int moveValue = minimax(board,0,true, i, j);
+                    int moveValue = minimax(board,0,true, i, j, console);
                     board.getC()[i][j].setValue(Cell.Empty_value);
 
                     if(moveValue > bestValue) {
