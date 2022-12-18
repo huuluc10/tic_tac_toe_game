@@ -25,6 +25,10 @@ public class Minimax {
                         board.markPos(i,j,Cell.O_Value);
                         hightestValue = max(hightestValue, minimax(board, depth - 1, alpha, beta, false));
                         board.Undo(i,j);
+                        alpha = Math.max(alpha, hightestValue);
+                        if (alpha >= beta) {
+                            return hightestValue;
+                        }
                     }
                 }
             }
@@ -37,6 +41,10 @@ public class Minimax {
                         board.markPos(i,j,Cell.X_Value);
                         lowestVal = min(lowestVal, minimax(board, depth - 1, alpha, beta, true));
                         board.Undo(i,j);
+                        beta = Math.min(beta, lowestVal);
+                        if (beta <= alpha) {
+                            return lowestVal;
+                        }
                     }
                 }
             }
