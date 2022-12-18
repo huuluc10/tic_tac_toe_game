@@ -10,7 +10,7 @@ public class Minimax {
     Minimax() {
 
     }
-    public static int minimax(Board board, int depth,  boolean isMax) {
+    public static int minimax(Board board, int depth, int alpha, int beta, boolean isMax) {
         int boardValue =  evaluateBoard(board, depth);
 
         if (Math.abs(boardValue) > 0 || board.getAvailableMove() <= 0) {
@@ -22,9 +22,9 @@ public class Minimax {
             for (int i = 0; i < board.getBoardSize(); i++) {
                 for (int j = 0; j < board.getBoardSize(); j++) {
                     if (board.getC()[i][j].getValue().equals(Cell.Empty_value)) {
-                        board.getC()[i][j].setValue(Cell.O_Value);
-                        hightestValue = max(hightestValue, minimax(board, depth - 1, false));
-                        board.getC()[i][j].setValue(Cell.Empty_value);
+                        board.markPos(i,j,Cell.O_Value);
+                        hightestValue = max(hightestValue, minimax(board, depth - 1, alpha, beta, false));
+                        board.Undo(i,j);
                     }
                 }
             }
@@ -34,9 +34,9 @@ public class Minimax {
             for (int i = 0; i < board.getBoardSize(); i++) {
                 for (int j = 0; j < board.getBoardSize(); j++) {
                     if (board.getC()[i][j].getValue().equals(Cell.Empty_value)) {
-                        board.getC()[i][j].setValue(Cell.X_Value);
-                        lowestVal = min(lowestVal, minimax(board,depth - 1 , true));
-                        board.getC()[i][j].setValue(Cell.Empty_value);
+                        board.markPos(i,j,Cell.X_Value);
+                        lowestVal = min(lowestVal, minimax(board, depth - 1, alpha, beta, true));
+                        board.Undo(i,j);
                     }
                 }
             }
@@ -52,10 +52,10 @@ public class Minimax {
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
                 if (board.getC()[i][j].getValue().equals(Cell.Empty_value)) {
-                    board.getC()[i][j].setValue(Cell.O_Value);
-                    int moveValue = minimax(board,9,false);
+                    board.markPos(i,j,Cell.O_Value);
+                    int moveValue = minimax(board, 9, Integer.MIN_VALUE, Integer.MAX_VALUE, false);;
                     board.getC()[i][j].setValue(Cell.Empty_value);
-
+                    board.Undo(i,j);
                     if(moveValue > bestValue) {
                         bestMove[0] = i;
                         bestMove[1] = j;

@@ -33,6 +33,16 @@ public class Board extends JPanel {
         return availableMove;
     }
 
+    public void markPos(int row, int col, String Player) {
+        this.c[row][col].setValue(Player);
+        this.availableMove--;
+    }
+
+    public void Undo(int row, int col) {
+        this.c[row][col].setValue(Cell.Empty_value);
+        this.availableMove++;
+    }
+
     public Board(int boardSize, int sizeJframe) {
 
         this.boardSize = boardSize;     //kích thươc bàn cờ
@@ -271,9 +281,8 @@ public class Board extends JPanel {
             int [] coordinates = Minimax.getBestMove(board_copy);
             x = coordinates[0];
             y = coordinates[1];
-            System.out.println(x+" "+y);
-            c[x][y].setValue(Cell.O_Value);
-            availableMove--;
+            System.out.println("AI: "+ x + " " + y);
+            markPos(x,y, Cell.O_Value);
             EndGame(x,y,c[x][y].getValue());
             repaint();
             current_Player = Cell.X_Value;
@@ -281,7 +290,6 @@ public class Board extends JPanel {
     }
 
     private void getHumanMove (int xM, int yM) {
-        System.out.println(xM + " " + yM);
         //tính toán nhân vào cell nào
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
@@ -295,13 +303,12 @@ public class Board extends JPanel {
                     System.out.println("Đã chọn ô ở hàng " + (i+1) + " cột " + (j+1));
 
                     if(c[i][j].getValue() == "") {
-                        c[i][j].setValue(Cell.X_Value);
+                        markPos(i,j,Cell.X_Value);
                         repaint();
-                        availableMove--;
                         EndGame(i,j,c[i][j].getValue());
                         current_Player = Cell.O_Value;
                         PlayAI();
-                        printMatrix();
+//                        printMatrix();
                     }
                     //kết thúc vòng lặp
                     i = boardSize-1;
