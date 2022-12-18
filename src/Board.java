@@ -42,6 +42,15 @@ public class Board extends JPanel {
 
         c = new Cell[boardSize][boardSize];     //tạo mảng Cell để lưu thông tin bàn cờ
         this.initMatrix();      //khởi tạo mảng Cell rỗng
+//        for (int i = 0; i < boardSize; i++) {
+//            for (int j = 0; j < boardSize; j++) {
+//                if (j == boardSize - 1) {
+//                    System.out.println("(" + c[i][j].getX() + ";" + c[i][j].getY() + " (" + i + ";" + j + ") (" + (c[i][j].getX() + c[i][j].getWidth()) + ";" + (c[i][j].getY() + c[i][j].getWidth()) + ")");
+//                } else {
+//                    System.out.print("(" + c[i][j].getX() + ";" + c[i][j].getY() + " (" + i + ";" + j + ") (" + (c[i][j].getX() + c[i][j].getWidth()) + ";" + (c[i][j].getY() + c[i][j].getWidth()) + ") | ");
+//                }
+//            }
+//        }
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -64,8 +73,16 @@ public class Board extends JPanel {
     private void initMatrix(){
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                Cell cell = new Cell();
-                c[i][j] = cell;
+                c[i][j] =  new Cell();
+
+                int x = i * size;
+                int y = j * size;
+
+                c[i][j].setX(y);
+                c[i][j].setY(x);
+                c[i][j].setWidth(size-1);
+                c[i][j].setHeight(size-1);
+                c[i][j].setValue("");
             }
         }
     }
@@ -167,29 +184,64 @@ public class Board extends JPanel {
     }
 
     private int CheckWin(int col, int row, String value){
-        int countWin = 0;
-        if(boardSize < 5) {
-            countWin = 3;
-        } else {
-            countWin = 5;
+//        int countWin = 0;
+//        if(boardSize < 5) {
+//            countWin = 3;
+//        } else {
+//            countWin = 5;
+//        }
+//        System.out.println(availableMove);
+//        boolean rs =  checkHorzontal(col, row, countWin) || checkVertical(col, row, countWin) || checkPrimaryDiagonal(col, row, countWin) || checkSecondaryDiagonal(col, row, countWin);
+//        if(rs == true) {
+//            if(value.equals(Cell.X_Value)) {
+//                return humanWin;
+//            } else {
+//                return aiWin;
+//            }
+//        }
+//        if(availableMove <= 0) {
+//            return tie;
+//        }
+//        return -1;
+        if(availableMove <= 0) {
+            return tie;
         }
-        boolean rs =  checkHorzontal(col, row, countWin) || checkVertical(col, row, countWin) || checkPrimaryDiagonal(col, row, countWin) || checkSecondaryDiagonal(col, row, countWin);
-        if(rs == true) {
-            if(value.equals(Cell.X_Value)) {
+        for (int i = 0; i < 3; i++) {
+            if(c[i][0].getValue() == c[i][1].getValue() && c[i][0].getValue() == c[i][2].getValue() && c[i][0].getValue() != "") {
+                if(c[i][0].getValue().equals(Cell.X_Value)) {
+                    return humanWin;
+                } else {
+                    return aiWin;
+                }
+            }
+            if(c[0][i].getValue() == c[1][i].getValue() && c[0][i].getValue() == c[2][i].getValue() && c[0][i].getValue() != "") {
+                if(c[0][i].getValue().equals(Cell.X_Value)) {
+                    return humanWin;
+                } else {
+                    return aiWin;
+                }
+            }
+        }
+        if (c[0][0].getValue() == c[1][1].getValue() && c[0][0].getValue() == c[2][2].getValue() && c[0][0].getValue() != "") {
+            if(c[0][0].getValue().equals(Cell.X_Value)) {
                 return humanWin;
             } else {
                 return aiWin;
             }
         }
-        if(availableMove <= 0) {
-            return tie;
+        if (c[0][2].getValue() == c[1][1].getValue() && c[0][2].getValue() ==c [2][0].getValue() && c[0][2].getValue() != "") {
+            if(c[0][2].getValue().equals(Cell.X_Value)) {
+                return humanWin;
+            } else {
+                return aiWin;
+            }
         }
         return -1;
     }
 
     private void EndGame(int col, int row, String value) {
-        int result = CheckWin(col,row,value);
         String playerWin ="";
+        int result = CheckWin(col,row,value);
         if(result == humanWin) {
             playerWin ="Bạn thắng";
         } else if (result == aiWin) {
@@ -219,15 +271,17 @@ public class Board extends JPanel {
             int [] coordinates = Minimax.getBestMove(board_copy);
             x = coordinates[0];
             y = coordinates[1];
+            System.out.println(x+" "+y);
             c[x][y].setValue(Cell.O_Value);
+            availableMove--;
             EndGame(x,y,c[x][y].getValue());
             repaint();
-            availableMove--;
             current_Player = Cell.X_Value;
         }
     }
 
     private void getHumanMove (int xM, int yM) {
+        System.out.println(xM + " " + yM);
         //tính toán nhân vào cell nào
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
@@ -238,7 +292,7 @@ public class Board extends JPanel {
                 int cY_End = cell.getY() + cell.getHeight();
 
                 if (cX_Start <= xM && cX_End >= xM && cY_Start <= yM && cY_End >= yM) {
-                    System.out.println("Đã chọn ô ở cột " + (i+1) + " hàng " + (j+1));
+                    System.out.println("Đã chọn ô ở hàng " + (i+1) + " cột " + (j+1));
 
                     if(c[i][j].getValue() == "") {
                         c[i][j].setValue(Cell.X_Value);
@@ -247,6 +301,7 @@ public class Board extends JPanel {
                         EndGame(i,j,c[i][j].getValue());
                         current_Player = Cell.O_Value;
                         PlayAI();
+                        printMatrix();
                     }
                     //kết thúc vòng lặp
                     i = boardSize-1;
@@ -259,9 +314,16 @@ public class Board extends JPanel {
     public void printMatrix() {
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                System.out.print(c[j][i].getValue() + " | ");
+                if (j == boardSize - 1) {
+                    if (c[i][j].getValue() != " "){
+                        System.out.println(c[i][j].getValue());
+                    } else {
+                        System.out.println(" ");
+                    }
+                } else {
+                    System.out.print(c[i][j].getValue() + " | ");
+                }
             }
-            System.out.println();
         }
     }
 
@@ -274,15 +336,7 @@ public class Board extends JPanel {
                 Color color = newColor;
                 graphic2d.setColor(color);
 
-                int x = i * size;
-                int y = j * size;
-
-                c[i][j].setX(x);
-                c[i][j].setY(y);
-                c[i][j].setWidth(size-1);
-                c[i][j].setHeight(size-1);
-
-                graphic2d.fillRect(x,y,size - 1,size - 1);
+                graphic2d.fillRect(c[i][j].getX(),c[i][j].getY(),c[i][j].getWidth() - 1,c[i][j].getHeight() - 1);
 
                 if (c[i][j].getValue().equals(Cell.X_Value)) {
                     img = imgX;
@@ -291,7 +345,10 @@ public class Board extends JPanel {
                     img = imgO;
                     graphic2d.drawImage(img, c[i][j].getX(),c[i][j].getY(),c[i][j].getWidth(),c[i][j].getHeight(), this);
                 }
-
+                else {
+                    img = null;
+                    graphic2d.drawImage(img, c[i][j].getX(),c[i][j].getY(),c[i][j].getWidth(),c[i][j].getHeight(), this);
+                }
             }
         }
     }
