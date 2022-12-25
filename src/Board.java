@@ -35,6 +35,24 @@ public class Board extends JPanel {
         return availableMove;
     }
 
+    public Board copyBoard() {
+        // Create a new board with the same size as this board
+        Board copy = new Board(this.boardSize, this.sizeJframe);
+
+        // Copy the cells from this board to the new board
+        for (int i = 0; i < this.boardSize; i++) {
+            for (int j = 0; j < this.boardSize; j++) {
+                copy.getArrayCell()[i][j].setValue(this.getArrayCell()[i][j].getValue());
+            }
+        }
+
+        // Copy the other properties of this board to the new board
+        copy.availableMove = this.availableMove;
+        copy.current_Player = this.current_Player;
+
+        return copy;
+    }
+
     public void markPos(int row, int col, String Player) {
         this.arrayCell[row][col].setValue(Player);
         this.availableMove--;
