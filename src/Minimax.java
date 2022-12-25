@@ -56,6 +56,7 @@ public class Minimax {
     }
 
     public static int[] getBestMove(Board board) {
+        long startTime = System.currentTimeMillis();
         List<int[]> emptySpots = new ArrayList<>();
 
         // Tìm các ô trống trên bàn cờ
@@ -89,6 +90,9 @@ public class Minimax {
                 }
             }
         }
+        long endTime = System.currentTimeMillis();
+        long elapsedTime = endTime - startTime;
+        System.out.println("Thời gian tính toán: " + elapsedTime + " ms");
         return bestMove;
     }
 
