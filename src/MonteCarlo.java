@@ -225,12 +225,14 @@ public class MonteCarlo {
 
             if (looseRatio < minLooseRatio) {
                 if (winRatio >= maxWinRatio && tieRatio >= maxTieRatio) {
+                    maxcondition2 = condition2;
                     bestMove = move;
                     minLooseRatio = looseRatio;
                     maxWinRatio = winRatio;
                     maxTieRatio = tieRatio;
                 }
                 if (winRatio >= maxWinRatio || tieRatio >= maxTieRatio) {
+                    maxcondition2 = condition2;
                     bestMove = move;
                     minLooseRatio = looseRatio;
                     maxWinRatio = winRatio;
