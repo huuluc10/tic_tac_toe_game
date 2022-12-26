@@ -2,7 +2,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MonteCarlo {
-    private static final int NUM_SIMULATIONS = 30;
+    private static final int NUM_SIMULATIONS = 350;
 
     private static List<int[]> getPossibleMoves(Board board) {
         List<int[]> moves = new ArrayList<>();
@@ -78,11 +78,12 @@ public class MonteCarlo {
         while (true) {
             // Kiểm tra đã kết thúc game chưa
             if (isGameOver(board)) {
-                board.printMatrix();
-                System.out.printf(getGameResult(board) + " \n-----------------------------------------------\n");
+//                board.printMatrix();
+//                System.out.printf(getGameResult(board) + " \n-----------------------------------------------\n");
                 return getGameResult(board);
             }
-
+//            System.out.println(currentPlayer);
+//            board.printMatrix();
             // Chọn ngẫu nhiên ô cần đánh
             Random random = ThreadLocalRandom.current();
             int randomIndex = random.nextInt(clonemoves.size());
@@ -137,27 +138,121 @@ public class MonteCarlo {
         // Tìm bước i tốt nhắt
         int[] bestMove = null;
 //        int[] bestMove = (moveResults.isEmpty()) ? null : moveResults.entrySet().iterator().next().getKey();
+        int maxtie = 0;
+        int maxloose = 0;
         int maxScore = Integer.MIN_VALUE;
+        float maxAvg = Integer.MIN_VALUE;
+        float maxWinRatio = 0;
+        float maxTieRatio = 0;
+        float minLooseRatio = 1;
+        float maxcondition2 = Integer.MIN_VALUE;
         for (Map.Entry<int[], int[]> entry : moveResults.entrySet()) {
             int[] move = entry.getKey();
             int[] results = entry.getValue();
+
             int wins = results[1];  // Player 1 wins
             int losses = results[2];  // Player 2 wins
             int ties = results[0];
+//            float avg = (results[0]* + (float)results[1]*2 - results[2]/2)/5;
+//            int sum = wins + ties + losses;
+//            // Tính điểm
+//            System.out.println("(" + move[0] + ";" + move[1] +"): " + results[0] + " " + results[1] + " " + results[2] + " " + (float) ties/sum+ " " + (float)wins/sum + " " + (float)losses/sum + " " + (float) ties/NUM_SIMULATIONS+ " " + (float)wins/NUM_SIMULATIONS + " " + (float)losses/NUM_SIMULATIONS);
+//
+////            if ((wins - losses) > maxScore) {
+////                bestMove = move;
+////                maxScore = wins - losses;
+////                maxloose = losses;
+////                maxtie = ties;
+////            } else if ((wins - losses) == maxScore) {
+////                if (ties > maxtie) {
+////                    bestMove = move;
+////                    maxtie = ties;
+////                    maxloose = losses;
+////                } else {
+////                    if (losses < maxloose) {
+////                        bestMove = move;
+////                        maxtie = wins - losses;
+////                        maxloose = losses;
+////                    }
+////                }
+////            }
+////            if (avg > maxAvg) {
+////                bestMove = move;
+////                maxAvg = avg;
+////                maxScore = wins;
+////                maxloose = losses;
+////            } else if (avg == maxAvg) {
+////                if (losses < maxloose) {
+////                    bestMove = move;
+////                    maxScore = wins;
+////                    maxloose = losses;
+////                } else if (losses == maxloose) {
+////                    if (wins > maxScore) {
+////                        bestMove = move;
+////                        maxScore = wins;
+////                    } else if (wins == maxScore) {
+////                        if (ties > maxtie) {
+////                            bestMove = move;
+////                        }
+////                    }
+////                }
+////            }
+//            if (wins > maxScore) {
+//                bestMove = move;
+//                maxScore = wins;
+//            } else if (wins == maxScore) {
+//                if (ties > maxtie) {
+//                    bestMove = move;
+//                    maxtie = ties;
+//                } else if (ties == maxtie) {
+//                    if (losses < maxloose) {
+//                        bestMove = move;
+//                        maxloose = losses;
+//                    }
+//                }
+//            }
+            int sum = results[0] + results[1] + results[2];
+            float winRatio = (float) results[1] / sum;
+            float tieRatio = (float) results[0] / sum;
+            float looseRatio = (float) results[2] / sum;
+            float condition2 = ((float) results[1] + results[0] - results[2])/sum;
 
-            // Tính điểm
-            int score = (wins * 2) + ties - losses;
 
-            if (score > maxScore) {
+            if(winRatio == 1.0 || tieRatio == 1.0) {
                 bestMove = move;
-                maxScore = score;
+                break;
             }
+
+            if (looseRatio < minLooseRatio) {
+                if (winRatio >= maxWinRatio && tieRatio >= maxTieRatio) {
+                    bestMove = move;
+                    minLooseRatio = looseRatio;
+                    maxWinRatio = winRatio;
+                    maxTieRatio = tieRatio;
+                }
+                if (winRatio >= maxWinRatio || tieRatio >= maxTieRatio) {
+                    bestMove = move;
+                    minLooseRatio = looseRatio;
+                    maxWinRatio = winRatio;
+                    maxTieRatio = tieRatio;
+                }
+            } else {
+                if (condition2 > maxcondition2) {
+                    maxcondition2 = condition2;
+                    bestMove = move;
+                    minLooseRatio = looseRatio;
+                    maxWinRatio = winRatio;
+                    maxTieRatio = tieRatio;
+                }
+            }
+            System.out.println("(" + move[0] + ";" + move[1] +"): " + results[0] + " " + results[1] + " " + results[2] + " " + tieRatio + " " + winRatio + " " + looseRatio);
+            System.out.println("winrate = " + maxWinRatio +" ; tie rate = " + maxTieRatio + " ; loose tie = " + minLooseRatio + " ;con2 = " + maxcondition2 + "\n");
         }
+
 
         long endTime = System.currentTimeMillis();
         long elapsedTime = endTime - startTime;
         System.out.println("Thời gian tính toán: " + elapsedTime + " ms");
-        System.out.println(bestMove[0] + " " + bestMove[1]);
         return bestMove;
     }
 }

@@ -110,7 +110,7 @@ public class Board extends JPanel {
         }
     }
 
-    private String CheckWin(int col, int row, String value){
+    private String CheckWin(){
         if(availableMove <= 0) {
             return "Hòa";
         }
@@ -147,12 +147,15 @@ public class Board extends JPanel {
         return null;
     }
 
-    private void EndGame(int col, int row, String value) {
-        String result = CheckWin(col,row,value);
+    private boolean EndGame() {
+        String result = CheckWin();
         if (result != null) {
             int reply = JOptionPane.showConfirmDialog(null, "Trò chơi kết thúc!\n" + result + "\nBạn có muốn chơi lại?", "Tiếp tục?",  JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION)
             {
+                for (int i = 0; i < 50; i++) {
+                    System.out.println();
+                }
                 availableMove = boardSize * boardSize;
                 initMatrix();
                 repaint();
@@ -161,6 +164,7 @@ public class Board extends JPanel {
                 System.exit(0);
             }
         }
+        return (result == null) ? false : true;
     }
 
     private void PlayAI() {
@@ -174,8 +178,10 @@ public class Board extends JPanel {
             y = coordinates[1];
             System.out.println("AI: "+ x + " " + y);
             markPos(x,y, Cell.O_Value);
-            EndGame(x,y,arrayCell[x][y].getValue());
             repaint();
+            if (EndGame()) {
+                return;
+            }
             setCurrent_Player(Cell.X_Value);
         }
     }
@@ -191,12 +197,14 @@ public class Board extends JPanel {
                 int cY_End = cell.getY() + cell.getHeight();
 
                 if (cX_Start <= xM && cX_End >= xM && cY_Start <= yM && cY_End >= yM) {
-                    System.out.println("Đã chọn ô ở hàng " + (i+1) + " cột " + (j+1));
+                    System.out.println("Đã chọn ô ở hàng " + i + " cột " + j);
 
                     if(arrayCell[i][j].getValue() == "") {
                         markPos(i,j,Cell.X_Value);
                         repaint();
-                        EndGame(i,j,arrayCell[i][j].getValue());
+                        if (EndGame()) {
+                            return;
+                        }
                         setCurrent_Player(Cell.O_Value);
                         PlayAI();
 //                        printMatrix();
