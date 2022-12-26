@@ -168,7 +168,8 @@ public class Board extends JPanel {
             //Gọi minimax trả về kiểu dữ liệu Cell để lấy tọa độ X, Y
             Board board_copy = this;
             int x , y;
-            int [] coordinates = Minimax.getBestMove(board_copy);
+//            int [] coordinates = Minimax.getBestMove(board_copy);
+            int [] coordinates = MonteCarlo.findBestMove(board_copy);
             x = coordinates[0];
             y = coordinates[1];
             System.out.println("AI: "+ x + " " + y);

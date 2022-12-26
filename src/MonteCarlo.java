@@ -2,7 +2,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MonteCarlo {
-    private static final int NUM_SIMULATIONS = 1500;
+    private static final int NUM_SIMULATIONS = 30;
 
     private static List<int[]> getPossibleMoves(Board board) {
         List<int[]> moves = new ArrayList<>();
@@ -69,8 +69,7 @@ public class MonteCarlo {
     private static void makeMove(Board board, int[] move, String currentPlayer) {
         int row = move[0];
         int col = move[1];
-        String player = (currentPlayer.equals(Cell.O_Value)) ? Cell.X_Value : Cell.O_Value;
-        board.markPos(row,col,player);
+        board.markPos(row,col,currentPlayer);
     }
 
     private static int playGame(Board board, String currentPlayer, List<int[]> moves) {
@@ -79,6 +78,8 @@ public class MonteCarlo {
         while (true) {
             // Kiểm tra đã kết thúc game chưa
             if (isGameOver(board)) {
+                board.printMatrix();
+                System.out.printf(getGameResult(board) + " \n-----------------------------------------------\n");
                 return getGameResult(board);
             }
 
@@ -94,7 +95,7 @@ public class MonteCarlo {
         }
     }
 
-    public static int[] findBestMove(Board board, String currentPlayer) {
+    public static int[] findBestMove(Board board) {
         long startTime = System.currentTimeMillis();
 
         Map<int[], int[]> moveResults = new HashMap<>();
@@ -118,10 +119,12 @@ public class MonteCarlo {
             Random random = ThreadLocalRandom.current();
             int randomIndex = random.nextInt(moves.size());
             int[] randomMove = moves.get(randomIndex);
+            makeMove(simBoard, randomMove, Cell.O_Value);
 
             // thực hiện mô phỏng và lấy kết quả
             List<int[]> simulationMoves = new ArrayList<>(moves);
-            int result = playGame(simBoard, currentPlayer, simulationMoves);
+            simulationMoves.remove(randomIndex);
+            int result = playGame(simBoard, Cell.X_Value, simulationMoves);
 
             // cập nhật kết quả của bước đi đó vào Map moveResults
             int[] results = moveResults.getOrDefault(randomMove, new int[3]);
