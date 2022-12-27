@@ -96,10 +96,6 @@ public class MonteCarlo {
         }
     }
 
-    private static void calculationTime(long startTime) {
-
-    }
-
     public static int[] findBestMove(Board board) {
         long startTime = System.currentTimeMillis();
 

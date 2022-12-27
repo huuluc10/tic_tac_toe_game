@@ -96,29 +96,6 @@ public class Minimax {
         return bestMove;
     }
 
-    private static boolean checkHorzontal(Board board, int col, int row, int countWin) {    //kiểm tra theo chiều ngang
-        int countLeft = 0;
-        int countRight = -1;
-        for (int i = col; i >= 0 ; i--) {
-            if (board.getArrayCell()[col][row].getValue().equals(board.getArrayCell()[i][row].getValue())) {
-                countLeft++;
-            } else {
-                break;
-            }
-        }
-        for (int i = col; i < board.getBoardSize(); i++) {
-            if (board.getArrayCell()[col][row].getValue().equals(board.getArrayCell()[i][row].getValue())) {
-                countRight++;
-                if (countLeft + countRight == countWin) {
-                    return true;
-                }
-            } else {
-                break;
-            }
-        }
-        return false;
-    }
-
     private static int evaluateBoard(Board board, int depth) {
         for (int i = 0; i < board.getBoardSize(); i++) {
             if(board.getArrayCell()[i][0].getValue() == board.getArrayCell()[i][1].getValue() && board.getArrayCell()[i][0].getValue() == board.getArrayCell()[i][2].getValue() && board.getArrayCell()[i][0].getValue() != "") {

@@ -236,23 +236,6 @@ public class Board extends JPanel {
             }
         }
     }
-
-    public void printMatrix() {
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = 0; j < boardSize; j++) {
-                if (j == boardSize - 1) {
-                    if (arrayCell[i][j].getValue() != " "){
-                        System.out.println(arrayCell[i][j].getValue());
-                    } else {
-                        System.out.println(" ");
-                    }
-                } else {
-                    System.out.print(arrayCell[i][j].getValue() + " | ");
-                }
-            }
-        }
-    }
-
     @Override
     public void paint(Graphics g) {
         Graphics2D graphic2d = (Graphics2D) g;
