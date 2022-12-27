@@ -179,6 +179,8 @@ public class Board extends JPanel {
             } else {
                 AIMode = false;
             }
+        } else {
+            System.exit(0);
         }
     }
 

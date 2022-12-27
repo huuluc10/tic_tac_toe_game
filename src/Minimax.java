@@ -113,6 +113,7 @@ public class Minimax {
                 }
             }
         }
+        // Đường chéo chính
         if (board.getArrayCell()[0][0].getValue() == board.getArrayCell()[1][1].getValue() && board.getArrayCell()[0][0].getValue() == board.getArrayCell()[2][2].getValue() && board.getArrayCell()[0][0].getValue() != "") {
             if (board.getArrayCell()[0][0].getValue() == Cell.O_Value) {
                 return 10 + depth;
@@ -120,8 +121,9 @@ public class Minimax {
                 return -10 - depth;
             }
         }
-        if (board.getArrayCell()[0][2].getValue() == board.getArrayCell()[1][1].getValue() && board.getArrayCell()[0][0].getValue() == board.getArrayCell()[2][0].getValue() && board.getArrayCell()[0][2].getValue() != "") {
-            if (board.getArrayCell()[2][0].getValue() == Cell.O_Value) {
+        // Đường chéo phụ
+        if (board.getArrayCell()[0][2].getValue() == board.getArrayCell()[1][1].getValue() && board.getArrayCell()[0][2].getValue() == board.getArrayCell()[2][0].getValue() && board.getArrayCell()[0][2].getValue() != "") {
+            if (board.getArrayCell()[0][2].getValue() == Cell.O_Value) {
                 return 10 + depth;
             } else {
                 return -10 - depth;
