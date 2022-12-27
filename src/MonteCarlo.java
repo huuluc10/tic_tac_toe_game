@@ -96,6 +96,10 @@ public class MonteCarlo {
         }
     }
 
+    private static void calculationTime(long startTime) {
+
+    }
+
     public static int[] findBestMove(Board board) {
         long startTime = System.currentTimeMillis();
 
@@ -231,7 +235,14 @@ public class MonteCarlo {
                     maxWinRatio = winRatio;
                     maxTieRatio = tieRatio;
                 }
-                if (winRatio >= maxWinRatio || tieRatio >= maxTieRatio) {
+                if (winRatio >= maxWinRatio || tieRatio >= maxTieRatio && winRatio > 0 && tieRatio > 0) {
+                    maxcondition2 = condition2;
+                    bestMove = move;
+                    minLooseRatio = looseRatio;
+                    maxWinRatio = winRatio;
+                    maxTieRatio = tieRatio;
+                }
+                if (condition2 > maxcondition2) {
                     maxcondition2 = condition2;
                     bestMove = move;
                     minLooseRatio = looseRatio;
@@ -248,7 +259,7 @@ public class MonteCarlo {
                 }
             }
             System.out.println("(" + move[0] + ";" + move[1] +"): " + results[0] + " " + results[1] + " " + results[2] + " " + tieRatio + " " + winRatio + " " + looseRatio);
-            System.out.println("winrate = " + maxWinRatio +" ; tie rate = " + maxTieRatio + " ; loose tie = " + minLooseRatio + " ;con2 = " + maxcondition2 + "\n");
+            System.out.println("winrate = " + maxWinRatio +" ; tie rate = " + maxTieRatio + " ; loose tie = " + minLooseRatio + " ;con2 = " + condition2 + " ; maxcon2 = " + maxcondition2 + "\n");
         }
 
 

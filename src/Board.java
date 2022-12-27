@@ -15,6 +15,7 @@ public class Board extends JPanel {
     private Image img;
     private int availableMove;
     private String current_Player;
+    private boolean AIMode = false;
     public String getCurrent_Player() {
         return current_Player;
     }
@@ -108,6 +109,7 @@ public class Board extends JPanel {
                 arrayCell[i][j].setValue("");
             }
         }
+
     }
 
     private String CheckWin(){
@@ -158,6 +160,7 @@ public class Board extends JPanel {
                 }
                 availableMove = boardSize * boardSize;
                 initMatrix();
+                selectMode();
                 repaint();
                 setCurrent_Player(Cell.X_Value);
             } else {
@@ -167,13 +170,30 @@ public class Board extends JPanel {
         return (result == null) ? false : true;
     }
 
+    public void selectMode() {
+        String[] algorithms = {"Minimax", "Monte Carlo"};
+        String selected = (String) JOptionPane.showInputDialog(null, "Chọn thuật toán máy cần dùng:", "Chọn thuật toán", JOptionPane.QUESTION_MESSAGE, null, algorithms, algorithms[0]);
+        if (selected != null) {
+            if (selected.equals("Minimax")) {
+                AIMode = true;
+            } else {
+                AIMode = false;
+            }
+        }
+    }
+
+
     private void PlayAI() {
         if (current_Player.equals(Cell.O_Value)) {
             //Gọi minimax trả về kiểu dữ liệu Cell để lấy tọa độ X, Y
             Board board_copy = this;
             int x , y;
-//            int [] coordinates = Minimax.getBestMove(board_copy);
-            int [] coordinates = MonteCarlo.findBestMove(board_copy);
+            int[] coordinates = null;
+            if (AIMode == true) {
+                coordinates = Minimax.getBestMove(board_copy);
+            } else if (AIMode == false){
+                coordinates = MonteCarlo.findBestMove(board_copy);
+            }
             x = coordinates[0];
             y = coordinates[1];
             System.out.println("AI: "+ x + " " + y);

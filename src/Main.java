@@ -5,15 +5,16 @@ public class Main {
     public static void main(String[] args) {
         int sizeJframe = 700;
         int boardSize = 3;
+        boolean AIMode = false;
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 
         Board board = new Board(boardSize, sizeJframe);
+        board.selectMode();
 
         //GUI
         JFrame jFrame = new JFrame("Tic-tac-toe Game");
         jFrame.setSize(sizeJframe+15,sizeJframe+40);
         jFrame.setResizable(false);
-        jFrame.add(board);
         jFrame.add(board);
 
         int x = ((int) dimension.getWidth()/2 - jFrame.getWidth()/2);
