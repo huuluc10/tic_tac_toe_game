@@ -73,7 +73,6 @@ public class Minimax {
                     if(moveValue > bestValue) {
                         bestMove[0] = i;
                         bestMove[1] = j;
-                        System.out.println(i+" "+j);
                         bestValue = moveValue;
                     }
                 }

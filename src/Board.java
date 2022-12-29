@@ -152,6 +152,7 @@ public class Board extends JPanel {
     private boolean EndGame() {
         String result = CheckWin();
         if (result != null) {
+            System.out.println(result + "\n");
             int reply = JOptionPane.showConfirmDialog(null, "Trò chơi kết thúc!\n" + result + "\nBạn có muốn chơi lại?", "Tiếp tục?",  JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION)
             {
@@ -219,7 +220,7 @@ public class Board extends JPanel {
                 int cY_End = cell.getY() + cell.getHeight();
 
                 if (cX_Start <= xM && cX_End >= xM && cY_Start <= yM && cY_End >= yM) {
-                    System.out.println("Đã chọn ô ở hàng " + i + " cột " + j);
+                    System.out.println("Người đánh ô ở hàng " + i + " cột " + j);
 
                     if(arrayCell[i][j].getValue() == "") {
                         markPos(i,j,Cell.X_Value);

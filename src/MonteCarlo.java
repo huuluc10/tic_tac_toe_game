@@ -126,7 +126,6 @@ public class MonteCarlo {
             // cập nhật kết quả của bước đi đó vào Map moveResults
             int[] results = moveResults.getOrDefault(randomMove, new int[3]);
             results[result]++;
-//            System.out.println(randomMove[0] + " " + randomMove[1] + " " + result  + " " + results[result]);
             moveResults.put(randomMove, results);
             simulationMoves.clear();
         }
@@ -177,10 +176,9 @@ public class MonteCarlo {
                 maxWinRatio = winRatio;
                 maxTieRatio = tieRatio;
             }
-            System.out.println("(" + move[0] + ";" + move[1] +"): " + results[0] + " " + results[1] + " " + results[2] + " " + tieRatio + " " + winRatio + " " + looseRatio);
-            System.out.println("winrate = " + maxWinRatio +" ; tie rate = " + maxTieRatio + " ; loose tie = " + minLooseRatio + " ;con2 = " + condition2 + " ; maxcon2 = " + maxcondition2 + "\n");
+//            System.out.println("(" + move[0] + ";" + move[1] +"): " + results[0] + " " + results[1] + " " + results[2] + " " + tieRatio + " " + winRatio + " " + looseRatio);
+//            System.out.println("winrate = " + maxWinRatio +" ; tie rate = " + maxTieRatio + " ; loose tie = " + minLooseRatio + " ;con2 = " + condition2 + " ; maxcon2 = " + maxcondition2 + "\n");
         }
-
 
         long endTime = System.currentTimeMillis();
         long elapsedTime = endTime - startTime;

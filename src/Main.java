@@ -1,8 +1,36 @@
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.lang.ClassLoader;
 
 public class Main {
     public static void main(String[] args) {
+
+        try {
+            // Tải file âm thanh vào bộ nhớ
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/sound.wav"));
+
+            // Tạo đối tượng Clip
+            Clip clip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, audioInputStream.getFormat()));
+
+            // Mở clip
+            clip.open(audioInputStream);
+
+            // Đặt clip về vị trí bắt đầu
+            clip.setFramePosition(0);
+
+            // Phát clip song song
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+
         int sizeJframe = 700;
         int boardSize = 3;
         boolean AIMode = false;
