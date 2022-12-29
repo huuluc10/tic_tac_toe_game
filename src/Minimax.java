@@ -13,7 +13,7 @@ public class Minimax {
     Minimax() {
 
     }
-    public static int minimax(Board board, int depth, int alpha, int beta, boolean isMax) {
+    private static int minimax(Board board, int depth, int alpha, int beta, boolean isMax) {
         int boardValue =  evaluateBoard(board, depth);
 
         if (Math.abs(boardValue) > 0 || board.getAvailableMove() <= 0 || depth == 0) {
@@ -57,19 +57,8 @@ public class Minimax {
 
     public static int[] getBestMove(Board board) {
         long startTime = System.currentTimeMillis();
-        List<int[]> emptySpots = new ArrayList<>();
-
-        // Tìm các ô trống trên bàn cờ
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (board.getArrayCell()[i][j].getValue().equals(Cell.Empty_value)) {
-                    emptySpots.add(new int[] {i, j});
-                }
-            }
-        }
 
         // Mảng chứa kết quả số lần thắng của máy tại mỗi ô trống
-        int[] results = new int[emptySpots.size()];
         int boardSize = board.getBoardSize();
         int[] bestMove = new int[2];
 
