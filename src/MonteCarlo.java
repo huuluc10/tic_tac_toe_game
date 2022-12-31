@@ -93,7 +93,7 @@ public class MonteCarlo {
     }
 
     public static int[] findBestMove(Board board) {
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
 
         Map<int[], int[]> moveResults = new HashMap<>();
         List<int[]> moves = getPossibleMoves(board);
@@ -180,9 +180,9 @@ public class MonteCarlo {
 //            System.out.println("winrate = " + maxWinRatio +" ; tie rate = " + maxTieRatio + " ; loose tie = " + minLooseRatio + " ;con2 = " + condition2 + " ; maxcon2 = " + maxcondition2 + "\n");
         }
 
-        long endTime = System.currentTimeMillis();
-        long elapsedTime = endTime - startTime;
-        System.out.println("Thời gian tính toán: " + elapsedTime + " ms");
+        long endTime = System.nanoTime();
+        long elapsedTime = (endTime - startTime) ;
+        System.out.println("Thời gian tính toán: " + elapsedTime + " ns");
         return bestMove;
     }
 }

@@ -2,6 +2,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +58,7 @@ public class Minimax {
     }
 
     public static int[] getBestMove(Board board) {
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
 
         // Mảng chứa kết quả số lần thắng của máy tại mỗi ô trống
         int boardSize = board.getBoardSize();
@@ -78,9 +80,9 @@ public class Minimax {
                 }
             }
         }
-        long endTime = System.currentTimeMillis();
-        long elapsedTime = endTime - startTime;
-        System.out.println("Thời gian tính toán: " + elapsedTime + " ms");
+        long endTime = System.nanoTime();
+        long elapsedTime = (endTime - startTime);
+        System.out.println("Thời gian tính toán: " + elapsedTime + " ns");
         return bestMove;
     }
 
